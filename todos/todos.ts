@@ -826,9 +826,8 @@ async function garbageCollectTodos(todosDir: string, settings: TodoSettings): Pr
 					const { frontMatter } = splitFrontMatter(content);
 					const parsed = parseFrontMatter(frontMatter, id);
 					if (!isTodoClosed(parsed.status)) return;
-					const createdAt = Date.parse(parsed.created_at);
-					if (!Number.isFinite(createdAt)) return;
-					if (createdAt < cutoff) {
+					const stats = await fs.stat(filePath);
+					if (stats.mtimeMs < cutoff) {
 						await fs.unlink(filePath);
 					}
 				} catch {
